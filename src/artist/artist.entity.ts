@@ -12,7 +12,7 @@ import { SongArtistRelation } from 'src/song-artist-relation/song-artist-relatio
 @Entity()
 export class Artist extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     name: string;

@@ -13,7 +13,7 @@ import { Pair } from "src/pair/pair.entity";
 @Entity()
 export class Song extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
 
     @Column()
     title: string;
@@ -22,7 +22,7 @@ export class Song extends BaseEntity {
     url: string;
 
     @Column()
-    isSample: boolean;
+    is_sample: boolean;
 
     @Optional()
     @OneToMany(() => SongArtistRelation, sar => sar.song)

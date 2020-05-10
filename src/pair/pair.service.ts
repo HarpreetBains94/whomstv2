@@ -21,17 +21,25 @@ export class PairService {
         return pair;
     }
 
-    async findOne(sampleId: number, songId: number): Promise<Pair> {
-        return await this.pairRepository.findOne({sampleId, songId});
+    async findOne(sampleId: string, songId: string): Promise<Pair> {
+        return await this.pairRepository.findOne({sample_id: sampleId, song_id: songId});
     }
 
-    async update(sampleId: number, songId: number, data: Partial<CreatePairDto>): Promise<Pair> {
-        await this.pairRepository.update({sampleId, songId}, data);
-        return await this.pairRepository.findOne({sampleId, songId})
+    async findOneForsongId(songId: string): Promise<Pair[]> {
+        return await this.pairRepository.find({where: {song_id: songId}});
     }
 
-    async delete(sampleId: number, songId: number): Promise<void> {
-        await this.pairRepository.delete({sampleId, songId});
+    async findOneForsampleId(sampleId: string): Promise<Pair[]> {
+        return await this.pairRepository.find({where: {sample_id: sampleId}});
+    }
+
+    async update(sampleId: string, songId: string, data: Partial<CreatePairDto>): Promise<Pair> {
+        await this.pairRepository.update({sample_id: sampleId, song_id: songId}, data);
+        return await this.pairRepository.findOne({sample_id: sampleId, song_id: songId})
+    }
+
+    async delete(sampleId: string, songId: string): Promise<void> {
+        await this.pairRepository.delete({sample_id: sampleId, song_id: songId});
     }
 }
   

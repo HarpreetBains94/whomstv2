@@ -12,22 +12,22 @@ import { Song } from "src/song/song.entity";
 @Entity()
 export class Pair extends BaseEntity {
     @PrimaryColumn()
-    songId: number;
+    song_id: string;
 
     @PrimaryColumn()
-    sampleId: number;
+    sample_id: string;
 
     @Column()
-    songTimestamp: number;
+    song_timestamp: number;
 
     @Column()
-    sampleTimestamp: number;
+    sample_timestamp: number;
 
     @ManyToOne(() => Song, s => s.pairsAsSong, {primary: true})
-    @JoinColumn({name: 'songId'})
+    @JoinColumn({name: 'song_id'})
     song: Promise<Song>;
 
     @ManyToOne(() => Song, s => s.pairsAsSample, {primary: true})
-    @JoinColumn({name: 'sampleId'})
+    @JoinColumn({name: 'sample_id'})
     sample: Promise<Song>;
 }

@@ -18,17 +18,27 @@ export class SongArtistRelationController {
     }
     
     @Get('/:artistId/:songId')
-    getOneForId(@Param('artistId') artistId: number, @Param('songId') songId: number) {
+    getOneForId(@Param('artistId') artistId: string, @Param('songId') songId: string) {
         return this.songArtistRelationService.findOne(artistId, songId);
     }
 
+    @Get('/search/artist/:artistId')
+    getOneForartistId(@Param('artistId') artistId: string) {
+        return this.songArtistRelationService.findOneForartistId(artistId);
+    }
+
+    @Get('/search/song/:songId')
+    getOneForsongId(@Param('songId') songId: string) {
+        return this.songArtistRelationService.findOneForsongId(songId);
+    }
+
     @Put('/:artistId/:songId')
-    updateSongArtistRelation(@Param('artistId') artistId: number, @Param('songId') songId: number, @Body() data: Partial<CreateSongArtistRelationDto>) {
+    updateSongArtistRelation(@Param('artistId') artistId: string, @Param('songId') songId: string, @Body() data: Partial<CreateSongArtistRelationDto>) {
         return this.songArtistRelationService.update(artistId, songId, data);
     }
 
     @Delete('/:artistId/:songId')
-    deleteSongArtistRelation(@Param('artistId') artistId: number, @Param('songId') songId: number) {
+    deleteSongArtistRelation(@Param('artistId') artistId: string, @Param('songId') songId: string) {
         return this.songArtistRelationService.delete(artistId, songId);
     }
 }

@@ -22,6 +22,11 @@ export class ArtistController {
         return this.artistService.findOne(id);
     }
 
+    @Get('search/:name')
+    getWithName(@Param('name') name: string) {
+        return this.artistService.findWithName(name);
+    }
+
     @Put(':id')
     updateArtist(@Param('id') id: string, @Body() data: Partial<CreateArtistDto>) {
         return this.artistService.update(id, data);

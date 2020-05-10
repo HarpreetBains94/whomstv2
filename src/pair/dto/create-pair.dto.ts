@@ -1,6 +1,6 @@
 export class CreatePairDto {
-    readonly songId: number
-    readonly sampleId: number
-    readonly songTimestamp: number
-    readonly sampleTimestamp: number
+    readonly song_id: string
+    readonly sample_id: string
+    readonly song_timestamp: number
+    readonly sample_timestamp: number
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 
 import { Artist } from './artist.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -23,6 +23,13 @@ export class ArtistService {
 
     async findOne(id: string): Promise<Artist> {
         return await this.artistRepository.findOne(id);
+    }
+
+    async findWithName(name: string): Promise<Artist[]> {
+        return await this.artistRepository
+            .createQueryBuilder('artist')
+            .where("LOWER(name) LIKE :name", { name: `%${ name.toLowerCase() }%` })
+            .getMany();
     }
 
     async update(id: string, data: Partial<CreateArtistDto>): Promise<Artist> {

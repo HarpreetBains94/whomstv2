@@ -24,6 +24,11 @@ export class SongController {
         return this.songService.findOne(id);
     }
 
+    @Get('search/:title')
+    getWithTitle(@Param('title') title: string) {
+        return this.songService.findWithTitle(title);
+    }
+
     @Put(':id')
     updateSong(@Param('id') id: string, @Body() data: Partial<CreateSongDto>) {
         return this.songService.update(id, data);

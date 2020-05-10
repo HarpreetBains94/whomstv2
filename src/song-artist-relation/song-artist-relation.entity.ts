@@ -12,19 +12,19 @@ import { Song } from "src/song/song.entity";
 @Entity()
 export class SongArtistRelation extends BaseEntity {
     @PrimaryColumn()
-    songId: number
+    song_id: string
     
     @PrimaryColumn()
-    artistId: number
+    artist_id: string
 
     @Column()
-    isFeat: boolean;
+    is_feat: boolean;
 
     @ManyToOne(() => Artist, a => a.artistRelation, {primary: true})
-    @JoinColumn({name: 'artistId'})
+    @JoinColumn({name: 'artist_id'})
     artist: Promise<Artist>;
 
     @ManyToOne(() => Song, s => s.songRelation, {primary: true})
-    @JoinColumn({name: 'songId'})
+    @JoinColumn({name: 'song_id'})
     song: Promise<Song>;
 }

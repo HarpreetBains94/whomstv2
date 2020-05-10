@@ -1,5 +1,5 @@
 export class CreateSongArtistRelationDto {
-    readonly songId: number
-    readonly artistId: number
-    readonly isFeat: boolean
+    readonly song_id: string
+    readonly artist_id: string
+    readonly is_feat: boolean
 }

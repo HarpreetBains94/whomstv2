@@ -16,21 +16,29 @@ export class SongArtistRelationService {
     }
 
     async create(data: CreateSongArtistRelationDto): Promise<SongArtistRelation> {
-        const artist = await this.songArtistRelationRepository.create(data);
-        await this.songArtistRelationRepository.save(artist);
-        return artist;
+        const songArtistRelation = await this.songArtistRelationRepository.create(data);
+        await this.songArtistRelationRepository.save(songArtistRelation);
+        return songArtistRelation;
     }
 
-    async findOne(artistId: number, songId: number): Promise<SongArtistRelation> {
-        return await this.songArtistRelationRepository.findOne({artistId, songId});
+    async findOne(artistId: string, songId: string): Promise<SongArtistRelation> {
+        return await this.songArtistRelationRepository.findOne({artist_id: artistId, song_id: songId});
     }
 
-    async update(artistId: number, songId: number, data: Partial<CreateSongArtistRelationDto>): Promise<SongArtistRelation> {
-        await this.songArtistRelationRepository.update({artistId, songId}, data);
-        return await this.songArtistRelationRepository.findOne({artistId, songId})
+    async findOneForartistId(artistId: string): Promise<SongArtistRelation[]> {
+        return await this.songArtistRelationRepository.find({where: {artist_id: artistId}});
     }
 
-    async delete(artistId: number, songId: number): Promise<void> {
-        await this.songArtistRelationRepository.delete({artistId, songId});
+    async findOneForsongId(songId: string): Promise<SongArtistRelation[]> {
+        return await this.songArtistRelationRepository.find({where: {song_id: songId}});
+    }
+
+    async update(artistId: string, songId: string, data: Partial<CreateSongArtistRelationDto>): Promise<SongArtistRelation> {
+        await this.songArtistRelationRepository.update({artist_id: artistId, song_id: songId}, data);
+        return await this.songArtistRelationRepository.findOne({artist_id: artistId, song_id: songId})
+    }
+
+    async delete(artistId: string, songId: string): Promise<void> {
+        await this.songArtistRelationRepository.delete({artist_id: artistId, song_id: songId});
     }
 }
