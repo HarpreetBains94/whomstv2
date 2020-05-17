@@ -9,11 +9,11 @@ import { Artist } from './artist/artist.entity';
 @Injectable()
 export class AppService {
   async getRandom() {
-    const randomsampleId = await this.getRandomsampleId();
-    return await this.getForId(randomsampleId);
+    const randomSampleId = await this.getRandomSampleId();
+    return await this.getForId(randomSampleId);
   }
 
-  private async getRandomsampleId(): Promise<string> {
+  private async getRandomSampleId(): Promise<string> {
     const randomSample = await getConnection()
       .getRepository(Song)
       .createQueryBuilder('song')
@@ -26,35 +26,73 @@ export class AppService {
 
   async getForId(sampleId: string) {
     const sample = await Song.findOne(sampleId);
-    const artists = await this.getArtistsForSong(sampleId);
-    const pairs = await Pair.find({where: {sampleId}});
+    if (!sample.is_sample) {
+      //TODO errors
+      return 'why?';
+    }
+    const allArtists = await this.getArtistsForSong(sampleId);
+    const artists = [];
+    const featArtists = [];
+    const producers = [];
+    allArtists.forEach((artist) => {
+      if (artist.is_feat) {
+        featArtists.push(artist);
+        return;
+      }
+      if (artist.is_prod) {
+        producers.push(artist);
+        return;
+      }
+      artists.push(artist);
+    })
+    const pairs = await Pair.find({where: {sample_id: sampleId}});
     const mappedPairs = await Promise.all(pairs.map(async (pair) => {
       const song = await Song.findOne(pair.song_id);
-      const artists = await this.getArtistsForSong(pair.song_id);
+      const allArtists = await this.getArtistsForSong(pair.song_id);
+      const artists = [];
+      const featArtists = [];
+      const producers = [];
+      allArtists.forEach((artist) => {
+        if (artist.is_feat) {
+          featArtists.push(artist);
+          return;
+        }
+        if (artist.is_prod) {
+          producers.push(artist);
+          return;
+        }
+        artists.push(artist);
+      })
       return {
         song,
         artists,
+        featArtists,
+        producers,
         song_timestamp: pair.song_timestamp,
         sample_timestamp: pair.sample_timestamp
       };
     }));
-    const randomsampleId = await this.getRandomsampleId();
+    const randomSampleId = await this.getRandomSampleId();
     return {
       sample,
       artists,
+      featArtists,
+      producers,
       pairs: mappedPairs,
-      randomsampleId
+      randomSampleId
     };
   }
 
   // TODO fix type hinting
-  private async getArtistsForSong(id: string): Promise<{name: string; is_feat: boolean}[]> {
-    const artistRelations = await SongArtistRelation.find({where: {songId: id}});
+  private async getArtistsForSong(id: string): Promise<{name: string; is_feat: boolean; is_prod: boolean}[]> {
+    const artistRelations = await SongArtistRelation.find({where: {song_id: id}});
     const artists = await artistRelations.map(async (artistRelation) => {
       const artist = await Artist.findOne(artistRelation.artist_id);
       return {
+        id: artist.id,
         name: artist.name,
-        is_feat: artistRelation.is_feat
+        is_feat: artistRelation.is_feat,
+        is_prod: artistRelation.is_prod
       };
     });
     return Promise.all(artists);
@@ -65,11 +103,12 @@ export class AppService {
     const entityManager = await new EntityManager(getConnection());
     const songIds = await this.fetchSongIdsForQuery(entityManager, cleanedQuery);
     if (songIds.length < 1) {
-      return;
+      return [];
     }
     const fullSongArtistPairs = await this.fetchFullSongArtistPairsForIds(entityManager, songIds);
     const groupedSongs = this.groupSongArtistPairs(fullSongArtistPairs);
-    return Object.values(groupedSongs);
+    const mappedSongs = this.mapSongsToString(Object.values(groupedSongs));
+    return mappedSongs;
     // Ignore for now. Dont judge me.
     // const songs = await enitityManager.query(
     //   'SELECT artist.name AS artist_name ' +
@@ -134,7 +173,7 @@ export class AppService {
 
   private async fetchFullSongArtistPairsForIds(entityManager: EntityManager, songIds: string[]): Promise<any[]> {
     return await entityManager.query(
-      'SELECT artist.name, song_artist_relation.is_feat, song.id as song_id, song.title FROM song ' +
+      'SELECT artist.name, song_artist_relation.is_feat, song.id as song_id, song.title, song_artist_relation.is_prod FROM song ' +
       'RIGHT JOIN song_artist_relation on song.id = song_artist_relation.song_id ' +
       'LEFT JOIN artist on song_artist_relation.artist_id = artist.id ' +
       `WHERE song.id IN (${songIds})`
@@ -148,15 +187,53 @@ export class AppService {
           songId: row.song_id,
           title: row.title,
           artists: [],
-          featArtists: []
+          featArtists: [],
+          producers: []
         };
       }
       if (row.is_feat) {
         arr[row.song_id].featArtists.push(row.name);
         return arr;
       }
+      if (row.is_prod) {
+        arr[row.song_id].producers.push(row.name);
+        return arr;
+      }
       arr[row.song_id].artists.push(row.name);
       return arr;
     }, Object.create(null));
+  }
+
+  private mapSongsToString(groupedSongs: any[]): any[] {
+    return groupedSongs.map((song) => {
+      let artistString = '';
+      let featArtistString = '';
+      let producersString = '';
+      song.artists.forEach((artist) => {
+        if (artistString.length === 0) {
+          artistString = artist;
+          return;
+        }
+        artistString += ', ' + artist;
+      });
+      song.featArtists.forEach((artist) => {
+        if (featArtistString.length === 0) {
+          featArtistString = ', feat ' + artist;
+          return;
+        }
+        featArtistString += ', ' + artist;
+      });
+      song.producers.forEach((artist) => {
+        if (producersString.length === 0) {
+          producersString = ', Prod. ' + artist;
+          return;
+        }
+        producersString += ', ' + artist;
+      });
+      return {
+        id: song.songId,
+        value: song.title + ' - ' + artistString + featArtistString + producersString
+      }
+    })
   }
 }

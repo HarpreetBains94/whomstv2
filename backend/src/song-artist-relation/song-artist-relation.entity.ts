@@ -17,8 +17,15 @@ export class SongArtistRelation extends BaseEntity {
     @PrimaryColumn()
     artist_id: string
 
-    @Column()
+    @PrimaryColumn({
+        default: false
+    })
     is_feat: boolean;
+
+    @PrimaryColumn({
+        default: false
+    })
+    is_prod: boolean;
 
     @ManyToOne(() => Artist, a => a.artistRelation, {primary: true})
     @JoinColumn({name: 'artist_id'})
