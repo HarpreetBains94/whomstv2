@@ -8,9 +8,12 @@
             :timestamp="getTimestamp()"
           ></video-container>
         </v-col>
-        <v-col cols="6">
+        <v-col cols="6" class="no-padding">
           <v-row>
-            <metadata-container :data="getMetadata()"></metadata-container>
+            <metadata-container
+              :data="getMetadata()"
+              :url="getUrl()"
+            ></metadata-container>
           </v-row>
           <v-row>
             <search-container></search-container>
@@ -49,5 +52,9 @@ export default {
 <style scoped lang="scss">
 .content {
   height: 100%;
+}
+.no-padding {
+  padding: 0;
+  padding-left: 12px;
 }
 </style>

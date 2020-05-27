@@ -4,6 +4,9 @@
       <div class="title">{{ getTitle() }}</div>
       <div class="artists">{{ getArtists() }}</div>
       <div class="producers">{{ getProducers() }}</div>
+      <v-btn text color="black" @click="onLinkClick">
+        <v-icon left>mdi-open-in-new</v-icon> Stream this song
+      </v-btn>
     </div>
   </v-container>
 </template>
@@ -12,7 +15,7 @@
 export default {
   name: "MetadataContainer",
 
-  props: ["data"],
+  props: ["data", "url"],
 
   methods: {
     getTitle() {
@@ -47,6 +50,16 @@ export default {
         producersString += ", " + artist.name;
       });
       return "Produced By " + producersString;
+    },
+    onLinkClick() {
+      window.open(this.getLinkUrl(), "_blank");
+    },
+    getLinkUrl() {
+      return (
+        "https://songwhip.com/convert?url=" +
+        encodeURIComponent("https://www.youtube.com/watch?v=" + this.url) +
+        "&sourceAction=pasteUrl&canGoBack=1"
+      );
     }
   }
 };
@@ -59,5 +72,8 @@ export default {
   border-radius: 20px;
   overflow: hidden;
   padding: 20px;
+  -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
 }
 </style>

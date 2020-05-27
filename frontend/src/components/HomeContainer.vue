@@ -90,33 +90,95 @@ export default {
 </script>
 <style scoped lang="scss">
 .base-container {
+  position: relative;
   height: 100vh;
   width: 100vw;
-  background: radial-gradient(
-    circle at bottom left,
-    rgb(255, 152, 169) 0%,
-    black 100%
+  background: linear-gradient(
+    45deg,
+    rgb(255, 166, 115) 0%,
+    rgb(255, 150, 224) 100%
   );
+  background-size: 200% 200%;
+
+  -webkit-animation: AnimationName 10s ease infinite;
+  -moz-animation: AnimationName 10s ease infinite;
+  animation: AnimationName 10s ease infinite;
   max-width: unset;
+  z-index: 1;
+
+  &:after {
+    content: "";
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+      45deg,
+      rgba(192, 255, 145, 1) 0%,
+      rgba(79, 193, 255, 1) 100%
+    );
+    background-size: 200% 200%;
+
+    -webkit-animation: AnimationName 10s ease infinite;
+    -moz-animation: AnimationName 10s ease infinite;
+    animation: AnimationName 10s ease infinite;
+    max-width: unset;
+    transition: opacity 0.45s;
+    z-index: -1;
+    opacity: 0;
+  }
 
   &.blue {
-    background: radial-gradient(
-      circle at bottom right,
-      rgb(56, 209, 255) 0%,
-      black 100%
-    );
+    &:after {
+      opacity: 1;
+    }
+  }
+}
+@-webkit-keyframes AnimationName {
+  0% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+@-moz-keyframes AnimationName {
+  0% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 100% 0%;
+  }
+}
+@keyframes AnimationName {
+  0% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 100% 0%;
   }
 }
 .nav-bar {
   width: calc(80% - 24px);
   margin-left: 12px;
-  max-width: 1536px;
   height: 40px;
   border-radius: 20px;
   background-color: white;
+  -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
 }
 .content-container {
   width: 80%;
-  max-width: 1536px;
 }
 </style>
