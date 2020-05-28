@@ -3,18 +3,20 @@ import {
     PrimaryGeneratedColumn,
     Column,
     BaseEntity,
-    OneToMany
+    OneToMany,
+    Unique
 } from "typeorm";
 import { Optional } from "@nestjs/common";
 
 import { SongArtistRelation } from 'src/song-artist-relation/song-artist-relation.entity';
 
 @Entity()
+@Unique(["name"])
 export class Artist extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: string;
 
-    @Column()
+    @Column({name: "name"})
     name: string;
 
     @Optional()

@@ -15,6 +15,12 @@
               :url="getUrl()"
             ></metadata-container>
           </v-row>
+          <v-row>
+            <answer-button-container
+              @previous-clicked="$emit('previous-clicked')"
+              @next-clicked="$emit('next-clicked')"
+            ></answer-button-container>
+          </v-row>
         </v-col>
       </v-row>
     </v-container>
@@ -24,12 +30,14 @@
 <script>
 import VideoContainer from "./VideoContainer.vue";
 import MetadataContainer from "./MetadataContainer.vue";
+import AnswerButtonContainer from "./AnswerButtonContainer.vue";
 
 export default {
   name: "AnswerContainer",
   components: {
     VideoContainer,
-    MetadataContainer
+    MetadataContainer,
+    AnswerButtonContainer
   },
   methods: {
     getUrl() {

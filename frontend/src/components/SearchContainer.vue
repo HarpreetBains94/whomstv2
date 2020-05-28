@@ -16,6 +16,8 @@
         return-object
       ></v-autocomplete>
       <v-btn text small @click="onSubmit">submit</v-btn>
+      <v-btn :disabled="$store.getters.hasNoPreviousId" text small @click="onPrevious">Previous</v-btn>
+      <v-btn text small @click="onSkip">Skip</v-btn>
     </div>
     <v-snackbar v-model="snackbar">
       nope
@@ -75,6 +77,13 @@ export default {
         return;
       }
       this.showIncorrectAnswerSnackBar();
+    },
+    onPrevious() {
+      this.$emit("previous-clicked");
+      this.$store.dispatch("doPreviousClickStuff");
+    },
+    onSkip() {
+      this.$store.dispatch("onSkipClicked");
     },
     showIncorrectAnswerSnackBar() {
       this.snackbar = true;

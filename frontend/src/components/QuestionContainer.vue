@@ -16,7 +16,9 @@
             ></metadata-container>
           </v-row>
           <v-row>
-            <search-container></search-container>
+            <search-container
+              @previous-clicked="$emit('previous-clicked')"
+            ></search-container>
           </v-row>
         </v-col>
       </v-row>

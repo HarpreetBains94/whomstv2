@@ -16,7 +16,9 @@ export default new Vuex.Store({
     shouldShowAnswer: false,
     randomSampleId: null,
     loading: false,
-    questionPair: {}
+    questionPair: {},
+    previousIds: [],
+    nextIds: []
   },
   mutations: {
     setSample(state, sample) {
@@ -39,6 +41,16 @@ export default new Vuex.Store({
     },
     setQuestionPair(state, pair) {
       state.questionPair = pair;
+    },
+    doPreviousClickStuff(state) {
+      state.nextIds.unshift(state.previousIds.shift());
+    },
+    doNextClickStuff(state) {
+      if (state.nextIds.length !== 0) {
+        state.previousIds.unshift(state.nextIds.shift());
+        return;
+      }
+      state.previousIds.unshift(state.sample.song.id);
     }
   },
   actions: {
@@ -50,6 +62,7 @@ export default new Vuex.Store({
         "setQuestionPair",
         data.pairs[Math.floor(Math.random() * Math.floor(data.pairs.length))]
       );
+      context.commit("setShouldShowAnswer", false);
     },
     answerChosen(context, correctAnswerIndex) {
       context.commit("setCorrectAnswer", correctAnswerIndex);
@@ -60,6 +73,16 @@ export default new Vuex.Store({
     },
     stopLoading(context) {
       context.commit("setLoading", false);
+    },
+    doPreviousClickStuff(context) {
+      context.commit("doPreviousClickStuff");
+    },
+    doNextClickStuff(context) {
+      context.commit("doNextClickStuff");
+    },
+    onSkipClicked(context) {
+      context.commit("setCorrectAnswer", 0);
+      context.commit("setShouldShowAnswer", true);
     }
   },
   getters: {
@@ -83,6 +106,15 @@ export default new Vuex.Store({
     },
     questionPair: state => {
       return state.questionPair;
+    },
+    hasNoPreviousId: state => {
+      return state.previousIds.length === 0;
+    },
+    previousId: state => {
+      return state.previousIds[0];
+    },
+    nextId: state => {
+      return state.nextIds[0] || state.randomSampleId;
     }
   },
   modules: {}

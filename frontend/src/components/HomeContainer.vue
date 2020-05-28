@@ -14,10 +14,17 @@
       </div>
     </v-row>
     <v-row align="center" justify="center" v-if="isAnswered()">
-      <answer-container class="content-container"></answer-container>
+      <answer-container
+        class="content-container"
+        @previous-clicked="onPreviousClicked"
+        @next-clicked="onNextClicked"
+      ></answer-container>
     </v-row>
     <v-row align="center" justify="center" v-else>
-      <question-container class="content-container"></question-container>
+      <question-container
+        class="content-container"
+        @previous-clicked="onPreviousClicked"
+      ></question-container>
     </v-row>
   </v-container>
 </template>
@@ -36,10 +43,10 @@ export default {
     error: null
   }),
   created() {
-    this.fetchData();
+    this.fetchData(this.$route.params.id || "");
   },
   methods: {
-    fetchData() {
+    fetchData(id) {
       this.error = null;
       this.$store.dispatch("startLoading");
       this.$http
@@ -48,7 +55,7 @@ export default {
             "//" +
             window.location.hostname +
             ":3000/" +
-            (this.$route.params.id || "")
+            id
         )
         .then(res => {
           this.$store.dispatch("stopLoading");
@@ -76,6 +83,12 @@ export default {
     },
     isAnswered() {
       return this.$store.getters.shouldShowAnswer;
+    },
+    onPreviousClicked() {
+      this.fetchData(this.$store.getters.previousId)
+    },
+    onNextClicked() {
+      this.fetchData(this.$store.getters.nextId)
     }
   },
   computed: {
