@@ -17,6 +17,30 @@ export default {
 
   data: () => ({
     //
-  })
+  }),
+
+  methods: {
+    onResize() {
+      this.$store.dispatch("resizeWindow", {
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+    }
+  },
+
+  mounted() {
+    this.$nextTick(() => {
+      this.$store.dispatch("resizeWindow", {
+        width: window.innerWidth,
+        height: window.innerHeight
+      });
+      window.addEventListener("resize", this.onResize);
+    });
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("resize", this.onResize);
+  }
 };
 </script>
+<style src="./css/style.css"></style>

@@ -1,14 +1,16 @@
 <template>
-  <v-container>
-    <div class="content">
-      <div class="title">{{ getTitle() }}</div>
-      <div class="artists">{{ getArtists() }}</div>
-      <div class="producers">{{ getProducers() }}</div>
-      <v-btn text color="black" @click="onLinkClick">
-        <v-icon left>mdi-open-in-new</v-icon> Stream this song
-      </v-btn>
-    </div>
-  </v-container>
+  <div
+    class="content"
+    :class="{ portrait: $store.getters.isPortrait }"
+    :style="getStyle()"
+  >
+    <div class="title">{{ getTitle() }}</div>
+    <div class="artists">{{ getArtists() }}</div>
+    <div class="producers">{{ getProducers() }}</div>
+    <v-btn text color="black" @click="onLinkClick" class="stream-button">
+      Stream this song<v-icon right>mdi-open-in-new</v-icon>
+    </v-btn>
+  </div>
 </template>
 
 <script>
@@ -60,13 +62,33 @@ export default {
         encodeURIComponent("https://www.youtube.com/watch?v=" + this.url) +
         "&sourceAction=pasteUrl&canGoBack=1"
       );
+    },
+    getWidth() {
+      if (this.$store.getters.isPortrait) {
+        return this.$store.getters.windowSize.width * 0.8 - 24;
+      }
+      return this.$store.getters.windowSize.width * 0.4 - 24;
+    },
+    getHeight() {
+      if (this.$store.getters.isPortrait) {
+        return 200;
+      }
+      return this.getWidth() * (9 / 16) * 0.5 - 12;
+    },
+    getStyle() {
+      return {
+        "min-height": this.getHeight() + "px",
+        "max-height": this.getHeight() + "px",
+        "min-width": this.getWidth() + "px",
+        "max-width": this.getWidth() + "px"
+      };
     }
   }
 };
 </script>
 <style scoped lang="scss">
 .content {
-  height: 200px;
+  position: relative;
   width: 100%;
   background-color: white;
   border-radius: 20px;
@@ -75,5 +97,18 @@ export default {
   -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  margin: 12px;
+
+  &.portrait {
+    margin-left: 0;
+    margin-top: 0;
+    margin-bottom: 24px;
+  }
+}
+
+.stream-button {
+  position: absolute;
+  bottom: 20px;
+  left: 5px;
 }
 </style>

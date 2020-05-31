@@ -23,10 +23,6 @@ export default {
 
   props: ["url", "timestamp"],
 
-  data: () => ({
-    windowWidth: 0
-  }),
-
   methods: {
     getUrl() {
       return (
@@ -34,30 +30,21 @@ export default {
       );
     },
     getWidth() {
-      return this.windowWidth * 0.4;
+      if (this.$store.getters.isPortrait) {
+        return this.$store.getters.windowSize.width * 0.8 - 24;
+      }
+      return this.$store.getters.windowSize.width * 0.4 - 24;
     },
     getHeight() {
       return this.getWidth() * (9 / 16);
     },
     getStyle() {
       return {
-        "max-height": this.getHeight() + "px"
+        "max-height": this.getHeight() + "px",
+        "max-width": this.getWidth() + "px",
+        "min-width": this.getWidth() + "px"
       };
-    },
-    onResize() {
-      this.windowWidth = window.innerWidth;
     }
-  },
-
-  mounted() {
-    this.$nextTick(() => {
-      this.windowWidth = window.innerWidth;
-      window.addEventListener("resize", this.onResize);
-    });
-  },
-
-  beforeDestroy() {
-    window.removeEventListener("resize", this.onResize);
   }
 };
 </script>
@@ -68,5 +55,7 @@ export default {
   -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
+  margin-bottom: 12px;
+  margin-right: 12px;
 }
 </style>

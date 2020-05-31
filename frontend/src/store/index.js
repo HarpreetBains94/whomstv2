@@ -18,7 +18,8 @@ export default new Vuex.Store({
     loading: false,
     questionPair: {},
     previousIds: [],
-    nextIds: []
+    nextIds: [],
+    windowSize: {}
   },
   mutations: {
     setSample(state, sample) {
@@ -51,6 +52,9 @@ export default new Vuex.Store({
         return;
       }
       state.previousIds.unshift(state.sample.song.id);
+    },
+    resizeWindow(state, size) {
+      state.windowSize = size;
     }
   },
   actions: {
@@ -68,6 +72,9 @@ export default new Vuex.Store({
       context.commit("setCorrectAnswer", correctAnswerIndex);
       context.commit("setShouldShowAnswer", true);
     },
+    resetAnswer(context) {
+      context.commit("setShouldShowAnswer", false);
+    },
     startLoading(context) {
       context.commit("setLoading", true);
     },
@@ -83,6 +90,9 @@ export default new Vuex.Store({
     onSkipClicked(context) {
       context.commit("setCorrectAnswer", 0);
       context.commit("setShouldShowAnswer", true);
+    },
+    resizeWindow(context, size) {
+      context.commit("resizeWindow", size);
     }
   },
   getters: {
@@ -115,6 +125,18 @@ export default new Vuex.Store({
     },
     nextId: state => {
       return state.nextIds[0] || state.randomSampleId;
+    },
+    windowSize: state => {
+      return state.windowSize;
+    },
+    isPortrait: state => {
+      if (state.windowSize.height && state.windowSize.width) {
+        if (state.windowSize.width * 0.4 - 24 <= 600) {
+          return true;
+        }
+        return state.windowSize.height > state.windowSize.width;
+      }
+      return false;
     }
   },
   modules: {}

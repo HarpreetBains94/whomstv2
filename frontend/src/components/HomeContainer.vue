@@ -1,12 +1,17 @@
 <template>
-  <v-container class="base-container" :class="{ blue: isAnswered() }" fluid>
-    <v-row align="center" justify="center">
-      <div class="nav-bar"></div>
-    </v-row>
-    <v-row align="center" justify="center" v-if="isLoading">
-      <div class="loading">
-        Loading...
-      </div>
+  <v-container
+    class="base-container"
+    ref="baseContainer"
+    :class="{ blue: isAnswered() }"
+    fluid
+  >
+    <v-row
+      align="center"
+      justify="center"
+      class="navbar-container"
+      :style="getNavbarContainerStyle()"
+    >
+      <navbar-container></navbar-container>
     </v-row>
     <v-row align="center" justify="center" v-if="error">
       <div class="error">
@@ -14,17 +19,10 @@
       </div>
     </v-row>
     <v-row align="center" justify="center" v-if="isAnswered()">
-      <answer-container
-        class="content-container"
-        @previous-clicked="onPreviousClicked"
-        @next-clicked="onNextClicked"
-      ></answer-container>
+      <answer-container class="content-container"></answer-container>
     </v-row>
     <v-row align="center" justify="center" v-else>
-      <question-container
-        class="content-container"
-        @previous-clicked="onPreviousClicked"
-      ></question-container>
+      <question-container class="content-container"></question-container>
     </v-row>
   </v-container>
 </template>
@@ -32,21 +30,24 @@
 <script>
 import QuestionContainer from "./QuestionContainer.vue";
 import AnswerContainer from "./AnswerContainer.vue";
+import NavbarContainer from "./NavbarContainer.vue";
 
 export default {
   name: "HomeContainer",
   components: {
     QuestionContainer,
-    AnswerContainer
+    AnswerContainer,
+    NavbarContainer
   },
   data: () => ({
     error: null
   }),
   created() {
-    this.fetchData(this.$route.params.id || "");
+    this.fetchData();
   },
   methods: {
-    fetchData(id) {
+    fetchData() {
+      const id = this.$route.params.id || "";
       this.error = null;
       this.$store.dispatch("startLoading");
       this.$http
@@ -84,16 +85,44 @@ export default {
     isAnswered() {
       return this.$store.getters.shouldShowAnswer;
     },
-    onPreviousClicked() {
-      this.fetchData(this.$store.getters.previousId)
+    getNavbarContainerStyle() {
+      return {
+        "margin-top": this.getNavbarMarginTop()
+      };
     },
-    onNextClicked() {
-      this.fetchData(this.$store.getters.nextId)
-    }
-  },
-  computed: {
-    isLoading() {
-      return this.$store.getters.loading;
+    getNavbarMarginTop() {
+      if (this.$store.getters.isPortrait) {
+        return this.getTopOffsetForPortrait() + "px";
+      }
+      return this.getTopOffsetForHorizontal() + "px";
+    },
+    getTopOffsetForPortrait() {
+      const videoHeight =
+        (this.$store.getters.windowSize.width * 0.8 - 24) * (9 / 16);
+      const otherCardHeights = 400;
+      const navbarHeight = 40;
+      const padding = 72;
+      const totalContentHeight =
+        videoHeight + otherCardHeights + navbarHeight + padding;
+      const heightDelta =
+        this.$store.getters.windowSize.height - totalContentHeight;
+      if (heightDelta < 0) {
+        return 0;
+      }
+      return heightDelta / 2;
+    },
+    getTopOffsetForHorizontal() {
+      const videoHeight =
+        (this.$store.getters.windowSize.width * 0.4 - 24) * (9 / 16);
+      const navbarHeight = 40;
+      const padding = 24;
+      const totalContentHeight = videoHeight + navbarHeight + padding;
+      const heightDelta =
+        this.$store.getters.windowSize.height - totalContentHeight;
+      if (heightDelta < 0) {
+        return 0;
+      }
+      return heightDelta / 2;
     }
   },
   watch: {
@@ -106,6 +135,8 @@ export default {
   position: relative;
   height: 100vh;
   width: 100vw;
+  overflow-x: hidden;
+  overflow: overlay;
   background: linear-gradient(
     45deg,
     rgb(255, 166, 115) 0%,
@@ -181,17 +212,10 @@ export default {
     background-position: 100% 0%;
   }
 }
-.nav-bar {
-  width: calc(80% - 24px);
-  margin-left: 12px;
-  height: 40px;
-  border-radius: 20px;
-  background-color: white;
-  -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
-}
 .content-container {
   width: 80%;
+}
+.navbar-container {
+  margin: auto;
 }
 </style>

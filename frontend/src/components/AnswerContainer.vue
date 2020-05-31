@@ -1,6 +1,27 @@
 <template>
-  <div class="content">
-    <v-container fluid>
+  <div class="main-content">
+    <v-container v-if="$store.getters.isPortrait" fluid>
+      <v-row>
+        <v-col cols="12">
+          <v-row no-gutters>
+            <metadata-container
+              :data="getMetadata()"
+              :url="getUrl()"
+            ></metadata-container>
+          </v-row>
+          <v-row no-gutters>
+            <video-container
+              :url="getUrl()"
+              :timestamp="getTimestamp()"
+            ></video-container>
+          </v-row>
+          <v-row no-gutters>
+            <answer-button-container></answer-button-container>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-container v-else fluid>
       <v-row>
         <v-col cols="6">
           <video-container
@@ -53,8 +74,9 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.content {
+.main-content {
   height: 100%;
+  padding: 0;
 }
 .no-padding {
   padding: 0;

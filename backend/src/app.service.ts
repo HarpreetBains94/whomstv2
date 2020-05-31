@@ -9,15 +9,16 @@ import { Artist } from './artist/artist.entity';
 @Injectable()
 export class AppService {
   async getRandom() {
-    const randomSampleId = await this.getRandomSampleId();
+    const randomSampleId = await this.getRandomSampleId('10000000000000');
     return await this.getForId(randomSampleId);
   }
 
-  private async getRandomSampleId(): Promise<string> {
+  private async getRandomSampleId(id: string): Promise<string> {
     const randomSample = await getConnection()
       .getRepository(Song)
       .createQueryBuilder('song')
       .where('song.is_sample = true')
+      .andWhere(`"song"."id" <> ${id}`)
       .orderBy('RANDOM()')
       .limit(1)
       .getOne();
@@ -72,7 +73,7 @@ export class AppService {
         sample_timestamp: pair.sample_timestamp
       };
     }));
-    const randomSampleId = await this.getRandomSampleId();
+    const randomSampleId = await this.getRandomSampleId(sample.id);
     return {
       sample,
       artists,
