@@ -19,7 +19,9 @@ export default new Vuex.Store({
     questionPair: {},
     previousIds: [],
     nextIds: [],
-    windowSize: {}
+    windowSize: {},
+    topOffset: 0,
+    isMobile: false
   },
   mutations: {
     setSample(state, sample) {
@@ -55,6 +57,12 @@ export default new Vuex.Store({
     },
     resizeWindow(state, size) {
       state.windowSize = size;
+    },
+    setTopOffset(state, offset) {
+      state.topOffset = offset;
+    },
+    setIsMobile(state, isMobile) {
+      state.isMobile = isMobile;
     }
   },
   actions: {
@@ -93,6 +101,12 @@ export default new Vuex.Store({
     },
     resizeWindow(context, size) {
       context.commit("resizeWindow", size);
+    },
+    setTopOffset(context, offset) {
+      context.commit("setTopOffset", offset);
+    },
+    setIsMobile(context, isMobile) {
+      context.commit("setIsMobile", isMobile)
     }
   },
   getters: {
@@ -137,6 +151,12 @@ export default new Vuex.Store({
         return state.windowSize.height > state.windowSize.width;
       }
       return false;
+    },
+    topOffset: state => {
+      return state.topOffset;
+    },
+    isMobile: state => {
+      return state.isMobile;
     }
   },
   modules: {}

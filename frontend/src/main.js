@@ -18,7 +18,15 @@ const routes = [
     }
   },
   {
+    path: "/what",
+    name: "what",
+    component: () => {
+      return import("./components/WhatContainer.vue");
+    }
+  },
+  {
     path: "/:id",
+    name: "home",
     component: () => {
       return import("./components/HomeContainer.vue");
     }

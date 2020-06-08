@@ -7,6 +7,8 @@ import { ArtistModule } from './artist/artist.module';
 import { SongModule } from './song/song.module';
 import { SongArtistRelationModule } from './song-artist-relation/song-artist-relation.module';
 import { PairModule } from './pair/pair.module';
+import { BrokenLinkModule } from './broken-link/broken-link.module';
+import { RequestModule } from './request/request.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { PairModule } from './pair/pair.module';
     SongModule,
     SongArtistRelationModule,
     PairModule,
+    BrokenLinkModule,
+    RequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

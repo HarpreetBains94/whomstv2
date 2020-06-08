@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, EntityManager, getConnection } from 'typeorm';
+import * as bcrypt from 'bcrypt'
 
 import { Artist } from './artist.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -11,33 +12,65 @@ export class ArtistService {
         @InjectRepository(Artist) private artistRepository: Repository<Artist>
     ) {}
 
-    async showAll(): Promise<Artist[]> {
+    async showAll(apiToken: string, ): Promise<Artist[]> {
+        const isValid = await this.validateApiToken(apiToken);
+        if (!isValid) {
+            throw new UnauthorizedException();
+        }
         return await this.artistRepository.find();
     }
 
-    async create(data: CreateArtistDto): Promise<Artist> {
+    async create(apiToken: string, data: CreateArtistDto): Promise<Artist> {
+        const isValid = await this.validateApiToken(apiToken);
+        if (!isValid) {
+            throw new UnauthorizedException();
+        }
         const artist = await this .artistRepository.create(data);
         await this.artistRepository.save(artist);
         return artist;
     }
 
-    async findOne(id: string): Promise<Artist> {
+    async findOne(apiToken: string, id: string): Promise<Artist> {
+        const isValid = await this.validateApiToken(apiToken);
+        if (!isValid) {
+            throw new UnauthorizedException();
+        }
         return await this.artistRepository.findOne(id);
     }
 
-    async findWithName(name: string): Promise<Artist[]> {
+    async findWithName(apiToken: string, name: string): Promise<Artist[]> {
+        const isValid = await this.validateApiToken(apiToken);
+        if (!isValid) {
+            throw new UnauthorizedException();
+        }
         return await this.artistRepository
             .createQueryBuilder('artist')
             .where("LOWER(name) LIKE :name", { name: `%${ name.toLowerCase() }%` })
             .getMany();
     }
 
-    async update(id: string, data: Partial<CreateArtistDto>): Promise<Artist> {
+    async update(apiToken: string, id: string, data: Partial<CreateArtistDto>): Promise<Artist> {
+        const isValid = await this.validateApiToken(apiToken);
+        if (!isValid) {
+            throw new UnauthorizedException();
+        }
         await this.artistRepository.update(id, data);
         return await this.artistRepository.findOne(id)
     }
 
-    async delete(id: string): Promise<void> {
+    async delete(apiToken: string, id: string): Promise<void> {
+        const isValid = await this.validateApiToken(apiToken);
+        if (!isValid) {
+            throw new UnauthorizedException();
+        }
         await this.artistRepository.delete(id);
+    }
+
+    async validateApiToken(apiToken: string): Promise<boolean> {
+        const entityManager = await new EntityManager(getConnection());
+        const user = await entityManager.query(
+            `SELECT hashedtoken  FROM xyz `
+        );
+        return await bcrypt.compare(apiToken, user[0].hashedtoken);
     }
 }

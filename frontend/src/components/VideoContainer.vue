@@ -31,12 +31,12 @@ export default {
     },
     getWidth() {
       if (this.$store.getters.isPortrait) {
-        return this.$store.getters.windowSize.width * 0.8 - 24;
+        return Math.ceil(this.$store.getters.windowSize.width * 0.8 - 24);
       }
-      return this.$store.getters.windowSize.width * 0.4 - 24;
+      return Math.ceil(this.$store.getters.windowSize.width * 0.4 - 24);
     },
     getHeight() {
-      return this.getWidth() * (9 / 16);
+      return Math.ceil(this.getWidth() * (9 / 16));
     },
     getStyle() {
       return {
