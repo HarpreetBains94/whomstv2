@@ -5,8 +5,9 @@
     :style="getStyle()"
   >
     <div class="title">{{ getTitle() }}</div>
-    <div class="artists">{{ getArtists() }}</div>
-    <div class="producers">{{ getProducers() }}</div>
+    <div class="artists subtitle-2">{{ getArtists() }}</div>
+    <div class="producers subtitle-2">{{ getProducers() }}</div>
+    <div class="timestamp caption">{{ getTimestamp() }}</div>
     <v-btn text color="black" @click="onLinkClick" class="stream-button">
       Stream this song<v-icon right>mdi-open-in-new</v-icon>
     </v-btn>
@@ -17,7 +18,7 @@
 export default {
   name: "MetadataContainer",
 
-  props: ["data", "url"],
+  props: ["data", "url", "timestamp"],
 
   methods: {
     getTitle() {
@@ -52,6 +53,18 @@ export default {
         producersString += ", " + artist.name;
       });
       return "Produced By " + producersString;
+    },
+    getTimestamp() {
+      console.log(this.timestamp);
+      return "Sample appears at " + this.convertSecondsToMinute(this.timestamp);
+    },
+    convertSecondsToMinute(time) {
+      var minutes = Math.floor(time / 60);
+      var seconds = time - minutes * 60;
+      if (seconds < 10) {
+        seconds = "0" + seconds;
+      }
+      return minutes + ":" + seconds;
     },
     onLinkClick() {
       window.open(this.getLinkUrl(), "_blank");

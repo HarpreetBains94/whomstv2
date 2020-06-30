@@ -7,6 +7,7 @@
             <metadata-container
               :data="getMetadata()"
               :url="getUrl()"
+              :timestamp="getTimestamp()"
             ></metadata-container>
           </v-row>
           <v-row no-gutters>
@@ -34,6 +35,7 @@
             <metadata-container
               :data="getMetadata()"
               :url="getUrl()"
+              :timestamp="getTimestamp()"
             ></metadata-container>
           </v-row>
           <v-row>

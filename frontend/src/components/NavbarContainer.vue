@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar-container">
+  <div class="navbar-container" :style="getNavbarContainerStyle()">
     <div class="navbar" :style="getNavbarStyle()">
       <v-btn text rounded class="pa-5 mx-4 float-left nav-button" @click="onHomeClick">Home</v-btn>
       <v-menu offset-y>
@@ -38,22 +38,21 @@
 <script>
 export default {
   name: "NavbarContainer",
-  data: () => ({
-    isOverflown: false
-  }),
-
   methods: {
-    getNavbarStyle() {
+    getNavbarContainerStyle() {
       return {
-        width: this.getNavbarWidth(),
-        "margin-top": this.getMarginTop()
+        height: this.getMarginContainerHeight(),
+        "min-height": this.getMarginContainerHeight(),
+        "max-height": this.getMarginContainerHeight()
       };
     },
-    getNavbarWidth() {
-      return this.$store.getters.windowSize.width * 0.8 - 24 + "px";
+    getNavbarStyle() {
+      return {
+        width: this.$store.getters.windowSize.width * 0.8 - 24 + "px"
+      };
     },
-    getMarginTop() {
-      return this.$store.getters.topOffset + "px";
+    getMarginContainerHeight() {
+      return this.$store.getters.topOffset + 40 + "px";
     },
     onHomeClick() {
       this.$router.push("/");
@@ -91,7 +90,9 @@ export default {
 </script>
 <style scoped lang="scss">
 .navbar {
-  width: 80%;
+  position: absolute;
+  bottom: -12px;
+  left: calc(10% + 12px);
   height: 40px;
   border-radius: 20px;
   background-color: white;
@@ -101,11 +102,8 @@ export default {
   margin: auto;
 }
 .navbar-container {
-  width: 100vw;
-  position: fixed;
+  width: 100%;
+  position: relative;
   z-index: 2;
-}
-.nav-button {
-  // padding: 6px;
 }
 </style>

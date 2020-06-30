@@ -64,19 +64,18 @@ export default {
     },
     getStyle() {
       return {
-        "margin-top": this.getMargintTop()
+        width: this.$store.getters.windowSize.width * 0.8 - 24 + "px"
       }
-    },
-    getMargintTop() {
-      return (this.$store.getters.topOffset + 40 + 24) + "px";
     }
   }
 };
 </script>
 <style scoped lang="scss">
 .main-content {
+  position: absolute;
+  left: calc(10% + 12px);
+  margin-top: 36px !important;
   height: 800px;
-  width: calc(80% - 24px);
   margin: auto;
   padding: 12px;
   background-color: white;

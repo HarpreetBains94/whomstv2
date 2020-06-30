@@ -21,7 +21,8 @@ export default new Vuex.Store({
     nextIds: [],
     windowSize: {},
     topOffset: 0,
-    isMobile: false
+    isMobile: false,
+    contentHeight: 0
   },
   mutations: {
     setSample(state, sample) {
@@ -63,6 +64,9 @@ export default new Vuex.Store({
     },
     setIsMobile(state, isMobile) {
       state.isMobile = isMobile;
+    },
+    setContentHeight(state, height) {
+      state.contentHeight = height;
     }
   },
   actions: {
@@ -107,6 +111,9 @@ export default new Vuex.Store({
     },
     setIsMobile(context, isMobile) {
       context.commit("setIsMobile", isMobile)
+    },
+    setContentHeight(context, height) {
+      context.commit("setContentHeight", height);
     }
   },
   getters: {
@@ -157,6 +164,9 @@ export default new Vuex.Store({
     },
     isMobile: state => {
       return state.isMobile;
+    },
+    contentHeight: state => {
+      return state.contentHeight;
     }
   },
   modules: {}

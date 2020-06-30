@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="v-app-custom">
     <div class="base-container" :class="{ blue: isAnswered() }">
       <navbar-container></navbar-container>
       <router-view></router-view>
@@ -65,6 +65,7 @@ export default {
       const padding = 72;
       const totalContentHeight =
         videoHeight + otherCardHeights + navbarHeight + padding;
+      this.$store.dispatch("setContentHeight", totalContentHeight);
       const heightDelta =
         this.$store.getters.windowSize.height - totalContentHeight;
       if (heightDelta < 48) {
@@ -78,6 +79,7 @@ export default {
       const navbarHeight = 40;
       const padding = 24;
       const totalContentHeight = videoHeight + navbarHeight + padding;
+      this.$store.dispatch("setContentHeight", totalContentHeight);
       const heightDelta =
         this.$store.getters.windowSize.height - totalContentHeight;
       if (heightDelta < 48) {
@@ -91,6 +93,7 @@ export default {
       const padding = 24;
       const totalContentHeight =
         contentHeight + navbarHeight + padding;
+      this.$store.dispatch("setContentHeight", totalContentHeight);
       const heightDelta =
         this.$store.getters.windowSize.height - totalContentHeight;
       if (heightDelta < 48) {
@@ -125,10 +128,8 @@ export default {
 <style lang="scss" scoped>
 .base-container {
   position: relative;
-  height: 100vh;
-  width: 100vw;
-  overflow-x: hidden;
-  overflow: overlay;
+  min-height: 100vh;
+  min-width: 100vw;
   background: linear-gradient(
     45deg,
     rgb(255, 166, 115) 0%,
@@ -140,14 +141,15 @@ export default {
   animation: AnimationName 10s ease infinite;
   max-width: unset;
   z-index: 1;
+  overflow: auto;
 
   &:after {
     content: "";
-    height: 100vh;
-    width: 100vw;
     position: absolute;
     top: 0;
     left: 0;
+    bottom: 0;
+    right: 0;
     background: linear-gradient(
       45deg,
       rgba(192, 255, 145, 1) 0%,
@@ -201,5 +203,10 @@ export default {
   100% {
     background-position: 100% 0%;
   }
+}
+
+.v-app-custom {
+  height: 100vh;
+  overflow: overlay;
 }
 </style>
