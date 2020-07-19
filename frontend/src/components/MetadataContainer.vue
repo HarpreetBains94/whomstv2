@@ -44,6 +44,9 @@ export default {
       return "By " + artistString + featArtistString;
     },
     getProducers() {
+      if (this.data.producers.length === 0) {
+        return '';
+      }
       let producersString = "";
       this.data.producers.forEach(artist => {
         if (producersString.length === 0) {
@@ -55,7 +58,6 @@ export default {
       return "Produced By " + producersString;
     },
     getTimestamp() {
-      console.log(this.timestamp);
       return "Sample appears at " + this.convertSecondsToMinute(this.timestamp);
     },
     convertSecondsToMinute(time) {

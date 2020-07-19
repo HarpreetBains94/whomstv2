@@ -1,8 +1,6 @@
 <template>
   <v-container
     fluid
-    class="home-container"
-    :style="getStyle()"
   >
     <v-row 
       align="center"
@@ -93,10 +91,6 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.home-container {
-  width: 100%;
-  height: 100%;
-}
 .content-container {
   width: 80%;
 }

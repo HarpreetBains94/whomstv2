@@ -50,7 +50,7 @@
 <script>
 
 export default {
-  name: "WhatContainer",
+  name: "SubmitContainer",
   
   methods: {
     getWidth() {
@@ -74,7 +74,6 @@ export default {
 .main-content {
   position: absolute;
   left: calc(10% + 12px);
-  margin-top: 36px !important;
   height: 800px;
   margin: auto;
   padding: 12px;

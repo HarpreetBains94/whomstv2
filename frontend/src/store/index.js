@@ -20,9 +20,7 @@ export default new Vuex.Store({
     previousIds: [],
     nextIds: [],
     windowSize: {},
-    topOffset: 0,
     isMobile: false,
-    contentHeight: 0
   },
   mutations: {
     setSample(state, sample) {
@@ -59,15 +57,9 @@ export default new Vuex.Store({
     resizeWindow(state, size) {
       state.windowSize = size;
     },
-    setTopOffset(state, offset) {
-      state.topOffset = offset;
-    },
     setIsMobile(state, isMobile) {
       state.isMobile = isMobile;
     },
-    setContentHeight(state, height) {
-      state.contentHeight = height;
-    }
   },
   actions: {
     newSampleFetched(context, data) {
@@ -106,15 +98,9 @@ export default new Vuex.Store({
     resizeWindow(context, size) {
       context.commit("resizeWindow", size);
     },
-    setTopOffset(context, offset) {
-      context.commit("setTopOffset", offset);
-    },
     setIsMobile(context, isMobile) {
       context.commit("setIsMobile", isMobile)
     },
-    setContentHeight(context, height) {
-      context.commit("setContentHeight", height);
-    }
   },
   getters: {
     sample: state => {
@@ -159,15 +145,9 @@ export default new Vuex.Store({
       }
       return false;
     },
-    topOffset: state => {
-      return state.topOffset;
-    },
     isMobile: state => {
       return state.isMobile;
     },
-    contentHeight: state => {
-      return state.contentHeight;
-    }
   },
   modules: {}
 });

@@ -1,24 +1,91 @@
 <template>
   <v-app class="v-app-custom">
-    <div class="base-container" :class="{ blue: isAnswered() }">
-      <navbar-container></navbar-container>
-      <router-view></router-view>
+    <div class="base-container d-flex align-center" :class="{ blue: isAnswered() }">
+      <v-btn
+        icon
+        text
+        x-large
+        class="menu-button"
+        @click.stop="drawer = !drawer"
+      >
+        <v-icon>mdi-menu</v-icon>
+      </v-btn>
+      <router-view />
     </div>
+    <v-navigation-drawer
+      v-model="drawer"
+      absolute
+      temporary
+    >
+      <v-list dense>
+        <v-list-item
+          link
+          @click.stop="onHomeClick"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          link
+          @click.stop="onHelpClick"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-help</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Help</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          link
+          @click.stop="onSubmitClick"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-arrow-up-bold-box</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Submit a sample</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          link
+          @click.stop="onBrokenClick"
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-link-off</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Report a broken link</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+    <v-snackbar v-model="snackbar">
+      {{ snackbarMessage }}
+      <v-btn color="pink" text @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
   </v-app>
 </template>
 
 <script>
-import NavbarContainer from "./components/NavbarContainer.vue";
 
 export default {
   name: "App",
 
-  components: {
-    NavbarContainer
-  },
-
   data: () => ({
-    //
+    drawer: null,
+    snackbar: false,
+    snackbarMessage: '',
   }),
 
   methods: {
@@ -27,9 +94,9 @@ export default {
         width: window.innerWidth,
         height: window.innerHeight
       });
-      this.$store.dispatch("setTopOffset", this.getTopOffset());
       this.$store.dispatch("setIsMobile", this.isMobile());
     },
+
     isMobile() {
       if (
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -41,68 +108,47 @@ export default {
         return false;
       }
     },
-    getTopOffset() {
-      switch (this.$route.name) {
-        case "home":
-          return this.getOffsetForHomeComponent();
-        case "what":
-          return this.getOffsetForWhatComponent();
-        default:
-          return this.getOffsetForHomeComponent();
-      }
-    },
-    getOffsetForHomeComponent() {
-      if (this.$store.getters.isPortrait) {
-        return this.getTopOffsetForPortrait();
-      }
-      return this.getTopOffsetForHorizontal();
-    },
-    getTopOffsetForPortrait() {
-      const videoHeight =
-        (this.$store.getters.windowSize.width * 0.8 - 24) * (9 / 16);
-      const otherCardHeights = 400;
-      const navbarHeight = 40;
-      const padding = 72;
-      const totalContentHeight =
-        videoHeight + otherCardHeights + navbarHeight + padding;
-      this.$store.dispatch("setContentHeight", totalContentHeight);
-      const heightDelta =
-        this.$store.getters.windowSize.height - totalContentHeight;
-      if (heightDelta < 48) {
-        return 24;
-      }
-      return heightDelta / 2;
-    },
-    getTopOffsetForHorizontal() {
-      const videoHeight =
-        (this.$store.getters.windowSize.width * 0.4 - 24) * (9 / 16);
-      const navbarHeight = 40;
-      const padding = 24;
-      const totalContentHeight = videoHeight + navbarHeight + padding;
-      this.$store.dispatch("setContentHeight", totalContentHeight);
-      const heightDelta =
-        this.$store.getters.windowSize.height - totalContentHeight;
-      if (heightDelta < 48) {
-        return 24;
-      }
-      return heightDelta / 2;
-    },
-    getOffsetForWhatComponent() {
-      const contentHeight = 800;
-      const navbarHeight = 40;
-      const padding = 24;
-      const totalContentHeight =
-        contentHeight + navbarHeight + padding;
-      this.$store.dispatch("setContentHeight", totalContentHeight);
-      const heightDelta =
-        this.$store.getters.windowSize.height - totalContentHeight;
-      if (heightDelta < 48) {
-        return 24;
-      }
-      return heightDelta / 2;
-    },
+
     isAnswered() {
       return this.$store.getters.shouldShowAnswer;
+    },
+
+    onHomeClick() {
+      this.drawer = false;
+      this.$router.push("/");
+    },
+
+    onHelpClick() {
+      // this.$router.push("/what");
+    },
+
+    onSubmitClick() {
+      this.$router.push("/submit");
+    },
+
+    onBrokenClick() {
+      let id = this.$store.getters.sample.song.id;
+      if (this.$store.getters.shouldShowAnswer) {
+        id = this.$store.getters.correctAnswer.song.id;
+      }
+      this.$http
+        .post(
+          window.location.protocol +
+            "//" +
+            window.location.hostname +
+            ":3000/api/borked/",
+          {
+            song_id: id
+          }
+        )
+        .then(() => {
+          this.snackbarMessage = 'Thank you for feedback'
+          this.snackbar = true;
+        })
+        .catch(() => {
+          this.snackbarMessage = 'Something went wrong, try again'
+          this.snackbar = true;
+        });
     }
   },
 
@@ -112,12 +158,6 @@ export default {
       window.addEventListener("resize", this.onResize);
     });
   },
-
-  watch:{
-    $route (){
-        this.onResize();
-    }
-  }, 
 
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
@@ -208,5 +248,12 @@ export default {
 .v-app-custom {
   height: 100vh;
   overflow: overlay;
+}
+
+.menu-button {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
 }
 </style>
