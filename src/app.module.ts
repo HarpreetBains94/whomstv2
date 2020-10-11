@@ -11,6 +11,9 @@ import { SongArtistRelationModule } from './song-artist-relation/song-artist-rel
 import { PairModule } from './pair/pair.module';
 import { BrokenLinkModule } from './broken-link/broken-link.module';
 import { RequestModule } from './request/request.module';
+import * as PostgressConnectionStringParser from 'pg-connection-string';
+
+const connectionOptions = PostgressConnectionStringParser.parse(process.env.DATABASE_URL);
 
 @Module({
   imports: [
@@ -19,11 +22,11 @@ import { RequestModule } from './request/request.module';
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'test',
-      database: 'whomst',
+      host: connectionOptions.host,
+      port: Number.parseInt(connectionOptions.port) || 5432,
+      username: connectionOptions.user,
+      password: connectionOptions.password,
+      database: connectionOptions.database,
       entities: [
         'dist/**/*.entity.js'
       ],
