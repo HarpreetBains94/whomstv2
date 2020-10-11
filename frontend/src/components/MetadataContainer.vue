@@ -88,8 +88,8 @@ export default {
 .meta-data-container {
   position: relative;
   width: 100%;
-  padding-top: calc(37.5% - 12px);
-  border-radius: 20px;
+  padding-top: calc(37.5% - 14px);
+  border: 2px solid black;
   overflow: hidden;
   -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
@@ -108,7 +108,7 @@ export default {
   }
 
   &.is-portrait {
-    padding-top: 180px
+    padding-top: 200px
   }
 }
 

@@ -10,7 +10,7 @@
               :timestamp="getTimestamp()"
             ></metadata-container>
           </v-row>
-          <v-row no-gutters class="my-3">
+          <v-row no-gutters>
             <video-container
               :url="getUrl()"
               :timestamp="getTimestamp()"

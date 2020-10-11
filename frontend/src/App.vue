@@ -6,6 +6,7 @@
         text
         x-large
         class="menu-button"
+        :class="{'is-portrait': $store.getters.isPortrait}"
         @click.stop="drawer = !drawer"
       >
         <v-icon>mdi-menu</v-icon>
@@ -254,5 +255,10 @@ export default {
   top: 16px;
   left: 16px;
   z-index: 2;
+
+  &.is-portrait {
+    top: 4px;
+    left: 4px;
+  }
 }
 </style>

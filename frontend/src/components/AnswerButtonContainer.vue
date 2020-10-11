@@ -56,8 +56,8 @@ export default {
 .answer-button-container {
   position: relative;
   width: 100%;
-  padding-top: calc(18.75% - 12px);
-  border-radius: 20px;
+  padding-top: calc(18.75% - 14px);
+  border: 2px solid black;
   overflow: hidden;
   margin-top: 12px;
   -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);

@@ -69,7 +69,7 @@ export class ArtistService {
     async validateApiToken(apiToken: string): Promise<boolean> {
         const entityManager = await new EntityManager(getConnection());
         const user = await entityManager.query(
-            `SELECT hashedtoken  FROM xyz `
+            `SELECT hashedtoken FROM xyz`
         );
         return await bcrypt.compare(apiToken, user[0].hashedtoken);
     }
