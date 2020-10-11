@@ -1,47 +1,50 @@
 <template>
   <div
-    class="content"
-    :class="{ portrait: $store.getters.isPortrait }"
-    :style="getStyle()"
+    class="search-container"
+    :class="{'is-portrait': $store.getters.isPortrait}"
   >
-    <div class="title">
-      Who Sampled This Song?
-    </div>
-    <v-autocomplete
-      class="search"
-      v-model="selectedAnswer"
-      :items="songs"
-      :loading="isLoadingSearch"
-      :search-input.sync="search"
-      color="black"
-      hide-no-data
-      hide-selected
-      item-text="value"
-      item-value="id"
-      label="Search"
-      placeholder="Start typing to Search"
-      return-object
-      @keyup.enter.native="onSubmit"
-    ></v-autocomplete>
-    <v-btn text small @click="onSubmit">submit</v-btn>
-    <v-btn
-      :disabled="$store.getters.hasNoPreviousId"
-      text
-      small
-      @click="onPrevious"
-      class="previous-button"
+    <div
+      class="search-container-content"
     >
-      Previous
-    </v-btn>
-    <v-btn text small @click="onSkip" class="skip-button">
-      Skip
-    </v-btn>
-    <v-snackbar v-model="snackbar">
-      nope
-      <v-btn color="pink" text @click="snackbar = false">
-        Close
+      <v-autocomplete
+        class="search"
+        v-model="selectedAnswer"
+        :items="songs"
+        :loading="isLoadingSearch"
+        :search-input.sync="search"
+        color="black"
+        hide-no-data
+        hide-selected
+        item-text="value"
+        item-value="id"
+        label="Who Sampled This Song?"
+        return-object
+        @keyup.enter.native="onSubmit"
+      ></v-autocomplete>
+      <v-btn icon small @click="onSubmit">
+        <v-icon>
+          mdi-magnify
+        </v-icon>
       </v-btn>
-    </v-snackbar>
+      <v-btn
+        :disabled="$store.getters.hasNoPreviousId"
+        text
+        small
+        @click="onPrevious"
+        class="previous-button"
+      >
+        Previous
+      </v-btn>
+      <v-btn text small @click="onSkip" class="skip-button">
+        Skip
+      </v-btn>
+      <v-snackbar v-model="snackbar">
+        nope
+        <v-btn color="pink" text @click="snackbar = false">
+          Close
+        </v-btn>
+      </v-snackbar>
+    </div>
   </div>
 </template>
 
@@ -63,15 +66,11 @@ export default {
       this.isLoadingSearch = true;
       this.$http
         .get(
-          window.location.protocol +
-            "//" +
-            window.location.hostname +
-            ":3000/search/" +
-            val
+          "api/search/" + val
         )
         .then(res => {
-          this.songs = res.data;
           this.isLoadingSearch = false;
+          this.songs = res.data;
         })
         .catch(err => {
           this.songs = [];
@@ -92,9 +91,10 @@ export default {
       });
       if (correct) {
         this.$store.dispatch("answerChosen", correctAnserIndex);
+        this.$emit("show-snackbar", "Correct!")
         return;
       }
-      this.showIncorrectAnswerSnackBar();
+      this.$emit("show-snackbar", "Wrong")
     },
     onPrevious() {
       const previousId = this.$store.getters.previousId;
@@ -103,29 +103,6 @@ export default {
     },
     onSkip() {
       this.$store.dispatch("onSkipClicked");
-    },
-    showIncorrectAnswerSnackBar() {
-      this.snackbar = true;
-    },
-    getWidth() {
-      if (this.$store.getters.isPortrait) {
-        return this.$store.getters.windowSize.width * 0.8 - 24;
-      }
-      return this.$store.getters.windowSize.width * 0.4 - 24;
-    },
-    getHeight() {
-      if (this.$store.getters.isPortrait) {
-        return 200;
-      }
-      return this.getWidth() * (9 / 16) * 0.5 - 12;
-    },
-    getStyle() {
-      return {
-        "min-height": this.getHeight() + "px",
-        "max-height": this.getHeight() + "px",
-        "min-width": this.getWidth() + "px",
-        "max-width": this.getWidth() + "px"
-      };
     }
   },
 
@@ -144,40 +121,47 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.content {
+.search-container {
   position: relative;
-  height: 200px;
   width: 100%;
-  background-color: white;
+  padding-top: calc(18.75% - 12px);
   border-radius: 20px;
   overflow: hidden;
-  padding: 20px;
-  padding-bottom: 60px;
   -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
-  margin: 12px;
+  margin-top: 12px;
 
-  &.portrait {
-    margin-left: 0;
+  .search-container-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: white;
+    padding: 20px;
+    padding-bottom: 60px;
+  }
+
+  &.is-portrait {
+    padding-top: 120px;
   }
 }
 
 .search {
-  padding-top: 20px;
   display: inline-block;
-  width: calc(100% - 76px);
+  width: calc(100% - 30px);
 }
 
 .previous-button {
   position: absolute;
-  left: 5px;
+  left: 10px;
   bottom: 20px;
 }
 
 .skip-button {
   position: absolute;
-  left: 105px;
+  left: 110px;
   bottom: 20px;
 }
 </style>

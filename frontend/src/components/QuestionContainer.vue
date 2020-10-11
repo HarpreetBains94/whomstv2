@@ -17,7 +17,9 @@
             ></video-container>
           </v-row>
           <v-row no-gutters>
-            <search-container></search-container>
+            <search-container
+              @show-snackbar="$emit('show-snackbar', $event)"
+            />
           </v-row>
         </v-col>
       </v-row>
@@ -30,18 +32,18 @@
             :timestamp="getTimestamp()"
           ></video-container>
         </v-col>
-        <v-col cols="6" class="no-padding">
-          <v-row>
+        <v-col cols="6">
+          <v-row class="px-3">
             <metadata-container
               :data="getMetadata()"
               :url="getUrl()"
               :timestamp="getTimestamp()"
             ></metadata-container>
           </v-row>
-          <v-row>
+          <v-row class=" px-3">
             <search-container
-              @previous-clicked="$emit('previous-clicked')"
-            ></search-container>
+              @show-snackbar="$emit('show-snackbar', $event)"
+            />
           </v-row>
         </v-col>
       </v-row>
@@ -59,7 +61,7 @@ export default {
   components: {
     VideoContainer,
     SearchContainer,
-    MetadataContainer
+    MetadataContainer,
   },
   methods: {
     getUrl() {
@@ -78,9 +80,5 @@ export default {
 .main-content {
   height: 100%;
   padding: 0;
-}
-.no-padding {
-  padding: 0;
-  padding-left: 12px;
 }
 </style>

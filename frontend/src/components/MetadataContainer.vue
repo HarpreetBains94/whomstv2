@@ -1,16 +1,19 @@
 <template>
   <div
-    class="content"
-    :class="{ portrait: $store.getters.isPortrait }"
-    :style="getStyle()"
+    class="meta-data-container"
+    :class="{'is-portrait': $store.getters.isPortrait}"
   >
-    <div class="title">{{ getTitle() }}</div>
-    <div class="artists subtitle-2">{{ getArtists() }}</div>
-    <div class="producers subtitle-2">{{ getProducers() }}</div>
-    <div class="timestamp caption">{{ getTimestamp() }}</div>
-    <v-btn text color="black" @click="onLinkClick" class="stream-button">
-      Stream this song<v-icon right>mdi-open-in-new</v-icon>
-    </v-btn>
+    <div
+      class="meta-data-content"
+    >
+      <div class="title">{{ getTitle() }}</div>
+      <div class="artists subtitle-2">{{ getArtists() }}</div>
+      <div class="producers subtitle-2">{{ getProducers() }}</div>
+      <div class="timestamp caption">{{ getTimestamp() }}</div>
+      <v-btn text color="black" @click="onLinkClick" class="stream-button">
+        Stream this song<v-icon right>mdi-open-in-new</v-icon>
+      </v-btn>
+    </div>  
   </div>
 </template>
 
@@ -77,47 +80,35 @@ export default {
         encodeURIComponent("https://www.youtube.com/watch?v=" + this.url) +
         "&sourceAction=pasteUrl&canGoBack=1"
       );
-    },
-    getWidth() {
-      if (this.$store.getters.isPortrait) {
-        return this.$store.getters.windowSize.width * 0.8 - 24;
-      }
-      return this.$store.getters.windowSize.width * 0.4 - 24;
-    },
-    getHeight() {
-      if (this.$store.getters.isPortrait) {
-        return 200;
-      }
-      return this.getWidth() * (9 / 16) * 0.5 - 12;
-    },
-    getStyle() {
-      return {
-        "min-height": this.getHeight() + "px",
-        "max-height": this.getHeight() + "px",
-        "min-width": this.getWidth() + "px",
-        "max-width": this.getWidth() + "px"
-      };
     }
   }
 };
 </script>
 <style scoped lang="scss">
-.content {
+.meta-data-container {
   position: relative;
   width: 100%;
-  background-color: white;
+  padding-top: calc(37.5% - 12px);
   border-radius: 20px;
   overflow: hidden;
-  padding: 20px;
   -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
-  margin: 12px;
+  margin-bottom: 12px;
 
-  &.portrait {
-    margin-left: 0;
-    margin-top: 0;
-    margin-bottom: 24px;
+  .meta-data-content {
+    position: absolute;
+    background-color: white;
+    padding: 20px;
+    padding-bottom: 170px;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  &.is-portrait {
+    padding-top: 180px
   }
 }
 

@@ -10,7 +10,9 @@
       >
         <v-icon>mdi-menu</v-icon>
       </v-btn>
-      <router-view />
+      <router-view
+        @show-snackbar="showSnackbar"
+      />
     </div>
     <v-navigation-drawer
       v-model="drawer"
@@ -44,18 +46,6 @@
         </v-list-item>
         <v-list-item
           link
-          @click.stop="onSubmitClick"
-        >
-          <v-list-item-icon>
-            <v-icon>mdi-arrow-up-bold-box</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>Submit a sample</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item
-          link
           @click.stop="onBrokenClick"
         >
           <v-list-item-icon>
@@ -74,18 +64,29 @@
         Close
       </v-btn>
     </v-snackbar>
+    <v-dialog
+      v-model="showHelpDialog"
+      max-width="500"
+    >
+      <help-container />
+    </v-dialog>
   </v-app>
 </template>
-
 <script>
+
+import HelpContainer from "./components/HelpContainer.vue";
 
 export default {
   name: "App",
+  components: {
+    HelpContainer
+  },
 
   data: () => ({
     drawer: null,
     snackbar: false,
-    snackbarMessage: '',
+    snackbarMessage: "",
+    showHelpDialog: false,
   }),
 
   methods: {
@@ -119,11 +120,7 @@ export default {
     },
 
     onHelpClick() {
-      // this.$router.push("/what");
-    },
-
-    onSubmitClick() {
-      this.$router.push("/submit");
+      this.showHelpDialog = true;
     },
 
     onBrokenClick() {
@@ -131,25 +128,27 @@ export default {
       if (this.$store.getters.shouldShowAnswer) {
         id = this.$store.getters.correctAnswer.song.id;
       }
+      if (!id) {
+        return;
+      }
       this.$http
         .post(
-          window.location.protocol +
-            "//" +
-            window.location.hostname +
-            ":3000/api/borked/",
+            "api/borked/",
           {
             song_id: id
           }
         )
         .then(() => {
-          this.snackbarMessage = 'Thank you for feedback'
-          this.snackbar = true;
+          this.showSnackbar("Thank you for feedback");
         })
         .catch(() => {
-          this.snackbarMessage = 'Something went wrong, try again'
-          this.snackbar = true;
+          this.showSnackbar("Something went wrong, try again");
         });
-    }
+    },
+    showSnackbar(message) {
+      this.snackbarMessage = message;
+      this.snackbar = true;
+    },
   },
 
   mounted() {

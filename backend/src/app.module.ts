@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 import { ArtistModule } from './artist/artist.module';
 import { SongModule } from './song/song.module';
@@ -12,6 +14,9 @@ import { RequestModule } from './request/request.module';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client'),
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -20,7 +25,6 @@ import { RequestModule } from './request/request.module';
       password: 'test',
       database: 'whomst',
       entities: [
-        // 'src/**/*.entity.ts',
         'dist/**/*.entity.js'
       ],
       synchronize: true,

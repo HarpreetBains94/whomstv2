@@ -1,26 +1,28 @@
 <template>
   <div
-    class="content"
-    :class="{ portrait: $store.getters.isPortrait }"
-    :style="getStyle()"
+    class="answer-button-container"
+    :class="{'is-portrait': $store.getters.isPortrait}"
   >
-    <div class="title">Correct!</div>
-    <div>{{ getText() }}</div>
-    <v-btn text small @click="onBack" class="back-button">
-      back
-    </v-btn>
-    <v-btn
-      :disabled="$store.getters.hasNoPreviousId"
-      text
-      small
-      @click="onPrevious"
-      class="previous-button"
+    <div
+      class="answer-button-content"
     >
-      Previous
-    </v-btn>
-    <v-btn text small @click="onNext" class="next-button">
-      next
-    </v-btn>
+      <div>{{ getText() }}</div>
+      <v-btn text small @click="onBack" class="back-button">
+        back
+      </v-btn>
+      <v-btn
+        :disabled="$store.getters.hasNoPreviousId"
+        text
+        small
+        @click="onPrevious"
+        class="previous-button"
+      >
+        Previous
+      </v-btn>
+      <v-btn text small @click="onNext" class="next-button">
+        next
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -40,71 +42,59 @@ export default {
     onBack() {
       this.$store.dispatch("resetAnswer");
     },
-    getWidth() {
-      if (this.$store.getters.isPortrait) {
-        return this.$store.getters.windowSize.width * 0.8 - 24;
-      }
-      return this.$store.getters.windowSize.width * 0.4 - 24;
-    },
-    getHeight() {
-      if (this.$store.getters.isPortrait) {
-        return 200;
-      }
-      return this.getWidth() * (9 / 16) * 0.5 - 12;
-    },
-    getStyle() {
-      return {
-        "min-height": this.getHeight() + "px",
-        "max-height": this.getHeight() + "px",
-        "min-width": this.getWidth() + "px",
-        "max-width": this.getWidth() + "px"
-      };
-    },
     getText() {
       return (
-        this.$store.getters.sample.song.title +
+        "\"" + this.$store.getters.sample.song.title + "\"" +
         " was sampled by " +
-        this.$store.getters.correctAnswer.song.title
+        "\"" + this.$store.getters.correctAnswer.song.title + "\""
       );
     }
   }
 };
 </script>
 <style scoped lang="scss">
-.content {
+.answer-button-container {
   position: relative;
-  height: 200px;
   width: 100%;
-  background-color: white;
+  padding-top: calc(18.75% - 12px);
   border-radius: 20px;
   overflow: hidden;
-  padding: 20px;
+  margin-top: 12px;
   -webkit-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
   box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.5);
-  margin: 12px;
-  padding-bottom: 60px;
 
-  &.portrait {
-    margin-left: 0;
+  .answer-button-content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background-color: white;
+    padding: 20px;
+    padding-bottom: 60px;
+  }
+
+  &.is-portrait {
+    padding-top: 120px;
   }
 }
 
 .back-button {
   position: absolute;
-  left: 5px;
+  left: 10px;
   bottom: 20px;
 }
 
 .previous-button {
   position: absolute;
-  left: 70px;
+  left: 75px;
   bottom: 20px;
 }
 
 .next-button {
   position: absolute;
-  left: 170px;
+  left: 175px;
   bottom: 20px;
 }
 </style>

@@ -10,7 +10,7 @@
               :timestamp="getTimestamp()"
             ></metadata-container>
           </v-row>
-          <v-row no-gutters>
+          <v-row no-gutters class="my-3">
             <video-container
               :url="getUrl()"
               :timestamp="getTimestamp()"
@@ -30,15 +30,15 @@
             :timestamp="getTimestamp()"
           ></video-container>
         </v-col>
-        <v-col cols="6" class="no-padding">
-          <v-row>
+        <v-col cols="6">
+          <v-row class="px-3">
             <metadata-container
               :data="getMetadata()"
               :url="getUrl()"
               :timestamp="getTimestamp()"
             ></metadata-container>
           </v-row>
-          <v-row>
+          <v-row class="px-3">
             <answer-button-container
               @previous-clicked="$emit('previous-clicked')"
               @next-clicked="$emit('next-clicked')"
@@ -79,9 +79,5 @@ export default {
 .main-content {
   height: 100%;
   padding: 0;
-}
-.no-padding {
-  padding: 0;
-  padding-left: 12px;
 }
 </style>

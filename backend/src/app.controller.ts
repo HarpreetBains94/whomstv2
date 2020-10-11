@@ -8,17 +8,17 @@ export class AppController {
     private appService: AppService,
 ) {}
 
-  @Get()
+  @Get('/api/')
   getRandom() {
     return this.appService.getRandom();
   }
 
-  @Get(':id')
+  @Get('/api/:id')
   getForId(@Param('id') sample_id: string) {
     return this.appService.getForId(sample_id);
   }
 
-  @Get('/search/:query')
+  @Get('/api/search/:query')
   searchSongs(@Param('query') query: string) {
     return this.appService.searchSongs(query);
   }

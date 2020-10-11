@@ -137,11 +137,8 @@ export default new Vuex.Store({
       return state.windowSize;
     },
     isPortrait: state => {
-      if (state.windowSize.height && state.windowSize.width) {
-        if (state.windowSize.width * 0.4 - 24 <= 600) {
-          return true;
-        }
-        return state.windowSize.height > state.windowSize.width;
+      if (state.windowSize.width) {
+        return state.windowSize.width < 1650;
       }
       return false;
     },

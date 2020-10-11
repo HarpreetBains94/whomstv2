@@ -14,7 +14,10 @@
       justify="center"
       v-else
     >
-      <question-container class="content-container"></question-container>
+      <question-container
+        class="content-container"
+        @show-snackbar="$emit('show-snackbar', $event)"
+      ></question-container>
     </v-row>
   </v-container>
 </template>
@@ -42,11 +45,7 @@ export default {
       this.$store.dispatch("startLoading");
       this.$http
         .get(
-          window.location.protocol +
-            "//" +
-            window.location.hostname +
-            ":3000/" +
-            id
+          "api/" + id
         )
         .then(res => {
           this.$store.dispatch("stopLoading");
@@ -93,5 +92,6 @@ export default {
 <style scoped lang="scss">
 .content-container {
   width: 80%;
+  max-width: 1600px;
 }
 </style>

@@ -18,13 +18,6 @@ const routes = [
     }
   },
   {
-    path: "/submit",
-    name: "submit",
-    component: () => {
-      return import("./components/SubmitContainer.vue");
-    }
-  },
-  {
     path: "/:id",
     name: "home",
     component: () => {
