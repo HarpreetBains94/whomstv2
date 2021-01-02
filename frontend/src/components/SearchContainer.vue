@@ -21,7 +21,7 @@
         return-object
         @keyup.enter.native="onSubmit"
       ></v-autocomplete>
-      <v-tooltip>
+      <v-tooltip bottom>
         <template v-slot:activator="{ on }">
           <v-btn icon small @click="onSubmit" v-on="on">
             <v-icon>
